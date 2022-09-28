@@ -52,7 +52,7 @@ func (n *Node) GobEncode() ([]byte, error) {
 	var err error
 	var enc *gob.Encoder
 
-	buf = bytes.NewBuffer(make([]byte,32)])
+	buf = bytes.NewBuffer(make([]byte,32))
 	buf.WriteRune(n.ch)
 	enc = gob.NewEncoder(buf)
 	err = enc.Encode(n.next)
