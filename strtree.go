@@ -3,8 +3,10 @@ package strtree
 import (
    "fmt"
    "sort"
+   "bytes"
    "errors"
    "strings"
+   "encoding/gob"
 )
 
 type Node struct {
@@ -19,6 +21,52 @@ type Value struct {
 }
 
 var ErrNotFound = errors.New("Not found")
+
+func (n *Node) GobDecode(input []byte) error {
+	var buf *bytes.Buffer
+	var err error
+	var dec *gob.Decoder
+
+	buf = bytes.NewBuffer(input)
+	n.ch, _, err = buf.ReadRune()
+	if err != nil {
+		return err
+	}
+
+	dec = gob.NewDecoder(buf)
+	err = dec.Decode(&n.next)
+	if err != nil {
+		return err
+	}
+
+	err = dec.Decode(&n.data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (n *Node) GobEncode() ([]byte, error) {
+	var buf *bytes.Buffer
+	var err error
+	var enc *gob.Encoder
+
+	buf = bytes.NewBuffer(make([]byte,32)])
+	buf.WriteRune(n.ch)
+	enc = gob.NewEncoder(buf)
+	err = enc.Encode(n.next)
+	if err != nil {
+		return buf.Bytes(), err
+	}
+
+	err = enc.Encode(n.data)
+	if err != nil {
+		return buf.Bytes(), err
+	}
+
+	return buf.Bytes(), nil
+}
 
 func (n *Node) Fetch(s string) (*Node, int, int, error) {
    var c rune
