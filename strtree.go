@@ -653,7 +653,7 @@ func (n Node) astring(s string) []string {
 }
 
 func (kv Value) String() string {
-	return fmt.Sprintf("%s: %#v", kv.Key, kv.Value)
+	return fmt.Sprintf("%s: %#v", kv.Key, kv.Data)
 }
 
 func (n Node) String() string {
